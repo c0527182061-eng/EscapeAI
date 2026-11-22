@@ -35,33 +35,6 @@ EscapeAI הוא משחק חדר בריחה אינטראקטיבי הכולל ח�
 חשוב: קבלת רמז אינה פותחת את החדר אוטומטית. כדי להתקדם יש להזין תשובה נכונה.
 
 
-מבנה הפרויקט
-EscapeAI/
-├── backend/
-│   ├── api.py                  # נקודות הקצה של FastAPI
-│   ├── game_graph.py           # זרימת המשחק ב-LangGraph
-│   ├── game_state.py           # הגדרת מצב המשחק
-│   ├── rooms.py                # שמות החדרים והעיצוב הנושאי
-│   ├── puzzles.json            # מאגר 45 החידות
-│   ├── puzzle_selector.py      # בחירת חידה לפי חדר וקושי
-│   ├── adaptive_difficulty.py  # התאמת רמת הקושי
-│   ├── answer_evaluator_v1.py  # בודק התשובות המקורי (Before)
-│   ├── answer_evaluator_v2.py  # בודק התשובות המשופר (After)
-│   ├── evaluate_game.py
-|   ├── main.py         
-│   └── .env                   
-├── frontend/
-│   ├── src/
-│   │   ├── App.tsx
-│   │   ├── App.css
-│   │   ├── index.css
-│   │   └── actionMusic.ts      
-│   ├── package.json
-│   └── vite.config.ts
-├── screenshots/               
-├── .gitignore
-└── README.md
-
 
 שימוש ב־LangSmith
 הערכה אוטומטית ושיפור פרומפט באמצעות LangSmith
