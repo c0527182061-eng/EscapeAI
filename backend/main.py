@@ -1,4 +1,5 @@
 
+from uuid import uuid4
 from langgraph.types import Command
 from game_graph import build_graph
 
@@ -6,7 +7,7 @@ graph = build_graph()
 
 config = {
     "configurable": {
-        "thread_id": "player-1"
+        "thread_id": str(uuid4())
     }
 }
 
@@ -21,35 +22,51 @@ initial_state = {
     "score": 0,
     "is_correct": False,
     "game_finished": False,
-    "feedback": ""
+    "feedback": "",
+    "total_puzzles": 10,
+    "completed_puzzles": 0,
+    "used_puzzle_ids": [],
+    "current_puzzle_id": "",
+    "success_streak": 0,
+    "struggle_streak": 0,
+    "puzzle_start_time": 0,
+    "last_solve_time": 0
 }
 
-result = graph.invoke(
-    initial_state,
-    config=config
-)
+print("\n===== ESCAPE AI =====")
+print("ברוכה הבאה לחדר הבריחה!\n")
+
+result = graph.invoke(initial_state, config=config)
 
 while "__interrupt__" in result:
+
     request = result["__interrupt__"][0].value
 
-    print("\nחדר:", request["room_number"])
-    print("חידה:", request["puzzle"])
+    state_before = graph.get_state(config).values
+    completed_before = state_before.get("completed_puzzles", 0)
 
-    answer = input("התשובה שלך: ")
+    print(f"\nחדר {request['room_number']}")
+    print(f"רמת קושי: {state_before['difficulty']}")
+    print(f"חידה: {request['puzzle']}")
 
-    previous_room = request["room_number"]
+    answer = input("\nהתשובה שלך: ")
 
     result = graph.invoke(
         Command(resume=answer),
         config=config
     )
 
-    current_state = graph.get_state(config).values
+    state = graph.get_state(config).values
 
-    print("\nAI:", current_state["feedback"])
-    print("ניקוד:", current_state["score"])
+    print("\nAI:", state.get("feedback", ""))
+    print("ניקוד:", state["score"])
 
-    if current_state["is_correct"]:
-        print(f"פתרת את חדר {previous_room}!")
+    if state.get("completed_puzzles", 0) > completed_before:
+        print("🔓 החידה נפתרה בהצלחה!")
+        print(
+            f"התקדמות: {state['completed_puzzles']}"
+            f"/{state['total_puzzles']}"
+        )
 
-print("\nכל הכבוד! הצלחת לברוח מהמעבדה!")
+print("\n🎉 כל הכבוד! הצלחת לברוח!")
+print("ניקוד סופי:", graph.get_state(config).values["score"])
